@@ -1,0 +1,24 @@
+/* Password strength indicator styles */
+.password-requirements {
+  font-size: 0.875rem;
+}
+
+.requirement {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.requirement i {
+  width: 16px;
+  margin-right: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.requirement.text-success {
+  color: #28a745 !important;
+}
+
+.requirement.text-danger {
+  color: #dc3545 !important;
+}

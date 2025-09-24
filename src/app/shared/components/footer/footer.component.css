@@ -1,0 +1,81 @@
+/* Footer base */
+.site-footer {
+  background: linear-gradient(180deg, #0f172a 0%, #0b1224 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  color: #e2e8f0;
+}
+
+/* Brand badge */
+.brand-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-primary-dark)
+  );
+  box-shadow: 0 8px 20px rgba(var(--color-primary-rgb), 0.25);
+}
+
+/* Links */
+.footer-link {
+  color: #a5b4fc; /* light indigo for readability on dark */
+  text-decoration: none;
+}
+.footer-link:hover {
+  color: #ffffff;
+  text-decoration: none;
+}
+.footer-link:focus-visible {
+  outline: 2px solid rgba(var(--color-primary-rgb), 0.6);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Social icon buttons */
+.btn.btn-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #e2e8f0;
+  border: 1px solid rgba(99, 102, 241, 0.35); /* primary-ish */
+  background: rgba(99, 102, 241, 0.15);
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    color 0.2s ease;
+}
+.btn.btn-icon:hover {
+  color: #fff;
+  border-color: rgba(99, 102, 241, 0.6);
+  background: rgba(99, 102, 241, 0.25);
+}
+.btn.btn-icon:focus-visible {
+  outline: 2px solid rgba(var(--color-primary-rgb), 0.7);
+  outline-offset: 2px;
+}
+
+/* Contact */
+.footer-contact li {
+  margin-bottom: 8px;
+  color: #cbd5e1; /* muted on dark */
+}
+
+/* Separator */
+.footer-sep {
+  border-color: rgba(148, 163, 184, 0.2);
+}
+
+/* Responsive spacing */
+@media (max-width: 576px) {
+  .site-footer {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+  }
+}

@@ -1,0 +1,8 @@
+<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg" style="background: #fce4ec;">
+  <rect x="0" y="0" width="400" height="300" fill="#fce4ec" stroke="#e91e63" stroke-width="2"/>
+  <text x="200" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#c2185b">Clothing</text>
+  <text x="200" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#ec407a">Product</text>
+  <path d="M170 170 Q200 160 230 170 L225 200 Q200 210 175 200 Z" fill="#e91e63"/>
+  <circle cx="190" cy="175" r="2" fill="white"/>
+  <circle cx="210" cy="175" r="2" fill="white"/>
+</svg>

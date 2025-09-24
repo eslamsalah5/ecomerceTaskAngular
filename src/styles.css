@@ -1,1 +1,303 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Bootstrap CSS - Alternative import method */
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+/* Custom global styles */
+
+/* ===== THEME COLORS ===== */
+:root {
+  --color-primary: #2563eb;
+  --color-primary-light: #38bdf8;
+  --color-primary-dark: #1e40af;
+  --color-primary-rgb: 37, 99, 235;
+
+  --color-accent: #ff9800;
+  --color-accent-light: #ffb74d;
+  --color-accent-dark: #f57c00;
+
+  /* Secondary Colors */
+  --white: #ffffff;
+  --black: #000000;
+  --gray-100: #f8f9fa;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --gray-400: #ced4da;
+  --gray-500: #adb5bd;
+  --gray-600: #6c757d;
+  --gray-700: #495057;
+  --gray-800: #343a40;
+  --gray-900: #212529;
+
+  /* Gradient Colors */
+  --gradient-primary: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-primary-light) 100%
+  );
+  --gradient-secondary: linear-gradient(
+    135deg,
+    var(--color-primary-light) 0%,
+    var(--color-accent-light) 100%
+  );
+
+  /* Shadow */
+  --shadow-sm: 0 2px 4px rgba(var(--color-primary-rgb), 0.1);
+  --shadow-md: 0 4px 8px rgba(var(--color-primary-rgb), 0.15);
+  --shadow-lg: 0 8px 16px rgba(var(--color-primary-rgb), 0.2);
+
+  /* Legacy aliases */
+  --primary-cyan: var(--color-primary);
+  --light-cyan: var(--color-primary-light);
+  --dark-cyan: var(--color-primary-dark);
+  --primary-rgb: var(--color-primary-rgb);
+  --primary-orange: var(--color-accent);
+  --light-orange: var(--color-accent-light);
+  --dark-orange: var(--color-accent-dark);
+}
+
+/* ===== GLOBAL RESETS ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--gray-800);
+  background-color: var(--white);
+}
+
+/* ===== CUSTOM BUTTON STYLES ===== */
+.btn-primary {
+  background: var(--gradient-primary) !important;
+  border: none !important;
+  color: var(--white) !important;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  opacity: 0.9;
+}
+
+.btn-secondary {
+  background-color: var(--primary-orange) !important;
+  border-color: var(--primary-orange) !important;
+  color: var(--white) !important;
+}
+
+.btn-secondary:hover {
+  background-color: var(--dark-orange) !important;
+  border-color: var(--dark-orange) !important;
+}
+
+.btn-outline-primary {
+  border-color: var(--primary-cyan) !important;
+  color: var(--primary-cyan) !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-cyan) !important;
+  border-color: var(--primary-cyan) !important;
+}
+
+/* ===== CUSTOM TEXT COLORS ===== */
+.text-primary {
+  color: var(--primary-cyan) !important;
+}
+
+.text-secondary {
+  color: var(--primary-orange) !important;
+}
+
+.text-gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+}
+
+/* ===== CUSTOM BACKGROUND COLORS ===== */
+.bg-primary {
+  background: var(--gradient-primary) !important;
+}
+
+.bg-secondary {
+  background-color: var(--primary-orange) !important;
+}
+
+.bg-cyan {
+  background-color: var(--primary-cyan) !important;
+}
+
+.bg-orange {
+  background-color: var(--primary-orange) !important;
+}
+
+.bg-gradient {
+  background: var(--gradient-primary) !important;
+}
+
+/* ===== CUSTOM CARD STYLES ===== */
+.card {
+  border: none;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+  background: var(--gradient-secondary);
+  border-bottom: none;
+  color: var(--white);
+}
+
+/* ===== CUSTOM NAVBAR STYLES ===== */
+.navbar-brand {
+  font-weight: bold;
+  color: var(--white) !important;
+}
+
+.navbar-nav .nav-link {
+  color: var(--white) !important;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: var(--light-cyan) !important;
+}
+
+/* ===== CUSTOM FORM STYLES ===== */
+.form-control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 0.2rem rgba(var(--color-primary-rgb), 0.25);
+}
+
+.form-check-input:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* ===== CUSTOM BADGE STYLES ===== */
+.badge {
+  background-color: var(--color-accent) !important;
+}
+
+/* ===== CUSTOM ALERT STYLES ===== */
+.alert-primary {
+  background-color: rgba(var(--color-primary-rgb), 0.1);
+  border-color: var(--color-primary);
+  color: var(--color-primary-dark);
+}
+
+.alert-secondary {
+  background-color: rgba(255, 152, 0, 0.1);
+  border-color: var(--primary-orange);
+  color: var(--dark-orange);
+}
+
+/* ===== UTILITY CLASSES ===== */
+.shadow-cyan {
+  box-shadow: 0 4px 8px rgba(var(--color-primary-rgb), 0.3) !important;
+}
+
+.shadow-orange {
+  box-shadow: 0 4px 8px rgba(255, 152, 0, 0.3) !important;
+}
+
+.border-cyan {
+  border-color: var(--primary-cyan) !important;
+}
+
+.border-orange {
+  border-color: var(--primary-orange) !important;
+}
+
+/* ===== ANIMATION CLASSES ===== */
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.5s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.slide-in-right {
+  animation: slideInRight 0.5s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 15px;
+  }
+
+  .btn {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+
+/* ===== SCROLLBAR STYLING ===== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gradient-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-cyan);
+}

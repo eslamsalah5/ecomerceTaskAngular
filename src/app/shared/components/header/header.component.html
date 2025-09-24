@@ -1,0 +1,165 @@
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top custom-navbar">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" routerLink="/home">
+      <span class="brand-icon me-2">🛒</span>
+      <span class="brand-text">E‑Commerce</span>
+    </a>
+
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link px-3" routerLink="/home" routerLinkActive="active">
+            <i class="fas fa-home me-1"></i>Home
+          </a>
+        </li>
+
+        <!-- Navigation for Non-Authenticated Users -->
+        <ng-container *ngIf="!isAuthenticated">
+          <li class="nav-item">
+            <a
+              class="nav-link px-3"
+              routerLink="/about"
+              routerLinkActive="active"
+            >
+              <i class="fas fa-info-circle me-1"></i>About
+            </a>
+          </li>
+        </ng-container>
+
+        <!-- Navigation for Authenticated Users -->
+        <ng-container *ngIf="isAuthenticated">
+          <li class="nav-item">
+            <a
+              class="nav-link px-3"
+              routerLink="/products"
+              routerLinkActive="active"
+            >
+              <i class="fas fa-box me-1"></i>Products
+            </a>
+          </li>
+
+          <!-- Customer-specific navigation -->
+          <!-- <ng-container *ngIf="isCustomer">
+            <li class="nav-item">
+              <a
+                class="nav-link px-3"
+                routerLink="/orders"
+                routerLinkActive="active"
+              >
+                <i class="fas fa-shopping-bag me-1"></i>My Orders
+              </a>
+            </li>
+          </ng-container> -->
+
+          <!-- Admin-specific navigation -->
+          <ng-container *ngIf="isAdmin">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle px-3"
+                href="#"
+                id="adminDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="fas fa-cogs me-1"></i>Admin Panel
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                <li>
+                  <a class="dropdown-item" routerLink="/admin/dashboard">
+                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" routerLink="/admin/products">
+                    <i class="fas fa-boxes me-2"></i>Manage Products
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" routerLink="/admin/products/new">
+                    <i class="fas fa-plus me-2"></i>Add Product
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ng-container>
+        </ng-container>
+      </ul>
+
+      <!-- Actions -->
+      <div class="d-flex align-items-center">
+        <!-- Authenticated User Actions -->
+        <ng-container *ngIf="isAuthenticated">
+          <!-- User Menu Dropdown -->
+          <div class="dropdown">
+            <button
+              class="btn btn-ghost-light d-flex align-items-center gap-2 dropdown-toggle"
+              type="button"
+              id="userMenuDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <div class="user-avatar-container">
+                <img
+                  *ngIf="hasUserImage"
+                  [src]="userImageUrl"
+                  [alt]="userDisplayName"
+                  class="user-avatar-image"
+                  (error)="onImageError()"
+                />
+                <span *ngIf="!hasUserImage" class="user-avatar-initial">{{
+                  userInitial
+                }}</span>
+              </div>
+              <span class="d-none d-sm-inline">{{ userDisplayName }}</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li class="dropdown-header">
+                <div class="d-flex flex-column">
+                  <strong>{{ currentUser?.name || userDisplayName }}</strong>
+                  <small class="text-muted">{{ currentUser?.email }}</small>
+                  <small class="badge bg-primary mt-1">{{ userRole }}</small>
+                </div>
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a
+                  class="dropdown-item text-danger"
+                  href="#"
+                  (click)="logout()"
+                >
+                  <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </a>
+              </li>
+            </ul>
+          </div>
+        </ng-container>
+
+        <!-- Non-Authenticated User Actions -->
+        <ng-container *ngIf="!isAuthenticated">
+          <a class="btn btn-ghost-light me-2" routerLink="/login">
+            <i class="fas fa-sign-in-alt me-1"></i>Login
+          </a>
+          <a
+            class="btn btn-primary rounded-pill shadow-sm"
+            routerLink="/register"
+          >
+            <i class="fas fa-user-plus me-1"></i>Register
+          </a>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</nav>

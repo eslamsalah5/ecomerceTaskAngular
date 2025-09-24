@@ -1,0 +1,42 @@
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.product-image {
+  transition: transform 0.3s ease;
+}
+
+.product-image:hover {
+  transform: scale(1.05);
+}
+
+.thumbnail-image {
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.thumbnail-image:hover {
+  border-color: #007bff;
+}
+
+.quantity-input {
+  width: 80px;
+  text-align: center;
+}
+
+.price-section {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.action-buttons .btn {
+  border-radius: 25px;
+  font-weight: 600;
+}
+
+.discount-badge {
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  border-radius: 20px;
+}

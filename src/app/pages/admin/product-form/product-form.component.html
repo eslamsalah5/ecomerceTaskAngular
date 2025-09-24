@@ -1,0 +1,477 @@
+<div class="container-fluid py-4">
+  <!-- Loading State -->
+  <div
+    *ngIf="isLoading"
+    class="d-flex justify-content-center align-items-center"
+    style="min-height: 300px"
+  >
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading">
+    <!-- Page Header -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h1 class="h3 mb-0">
+              <span *ngIf="isEditMode">Edit Product</span>
+              <span *ngIf="!isEditMode">Add New Product</span>
+            </h1>
+            <p class="text-muted mb-0">
+              <span *ngIf="isEditMode">Update product information</span>
+              <span *ngIf="!isEditMode"
+                >Create a new product for your inventory</span
+              >
+            </p>
+          </div>
+          <div>
+            <button
+              class="btn btn-outline-secondary"
+              (click)="onCancel()"
+              [disabled]="isSaving"
+            >
+              <i class="fas fa-times me-2"></i>Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <!-- Success Message -->
+            <div
+              *ngIf="successMessage"
+              class="alert alert-success"
+              role="alert"
+            >
+              <i class="fas fa-check-circle me-2"></i>
+              {{ successMessage }}
+            </div>
+
+            <!-- Error Message -->
+            <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              {{ errorMessage }}
+            </div>
+
+            <form (ngSubmit)="onSubmit()" #productForm="ngForm" novalidate>
+              <!-- Basic Information -->
+              <div class="mb-4">
+                <h5 class="card-title">Basic Information</h5>
+                <hr />
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="productName" class="form-label"
+                      >Product Name *</label
+                    >
+                    <input
+                      type="text"
+                      id="productName"
+                      name="name"
+                      class="form-control"
+                      [class.is-invalid]="
+                        name.invalid && (name.dirty || name.touched)
+                      "
+                      [class.is-valid]="
+                        name.valid && (name.dirty || name.touched)
+                      "
+                      placeholder="Enter product name"
+                      [(ngModel)]="formData.name"
+                      required
+                      minlength="2"
+                      maxlength="100"
+                      #name="ngModel"
+                    />
+                    <div
+                      class="invalid-feedback"
+                      *ngIf="name.invalid && (name.dirty || name.touched)"
+                    >
+                      <div *ngIf="name.errors?.['required']">
+                        Product name is required
+                      </div>
+                      <div *ngIf="name.errors?.['minlength']">
+                        Product name must be at least 2 characters
+                      </div>
+                      <div *ngIf="name.errors?.['maxlength']">
+                        Product name must not exceed 100 characters
+                      </div>
+                    </div>
+                    <div
+                      class="valid-feedback"
+                      *ngIf="name.valid && (name.dirty || name.touched)"
+                    >
+                      Looks good!
+                    </div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="category" class="form-label">Category *</label>
+                    <select
+                      id="category"
+                      name="category"
+                      class="form-select"
+                      [class.is-invalid]="
+                        category.invalid && (category.dirty || category.touched)
+                      "
+                      [class.is-valid]="
+                        category.valid && (category.dirty || category.touched)
+                      "
+                      [(ngModel)]="formData.category"
+                      (change)="onCategoryChange()"
+                      required
+                      #category="ngModel"
+                    >
+                      <option value="">Select a category</option>
+                      <option value="Electronics">Electronics</option>
+                      <option value="Clothing">Clothing</option>
+                      <option value="Books">Books</option>
+                      <option value="Home & Garden">Home & Garden</option>
+                      <option value="Sports">Sports</option>
+                      <option value="Beauty">Beauty</option>
+                      <option value="Toys">Toys</option>
+                      <option value="Food">Food</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    <div
+                      class="invalid-feedback"
+                      *ngIf="
+                        category.invalid && (category.dirty || category.touched)
+                      "
+                    >
+                      Category is required
+                    </div>
+                    <div
+                      class="valid-feedback"
+                      *ngIf="
+                        category.valid && (category.dirty || category.touched)
+                      "
+                    >
+                      Looks good!
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="productCode" class="form-label"
+                      >Product Code *</label
+                    >
+                    <div class="input-group">
+                      <input
+                        type="text"
+                        id="productCode"
+                        name="productCode"
+                        class="form-control"
+                        [class.is-invalid]="
+                          productCode.invalid &&
+                          (productCode.dirty || productCode.touched)
+                        "
+                        [class.is-valid]="
+                          productCode.valid &&
+                          (productCode.dirty || productCode.touched)
+                        "
+                        placeholder="P01, P02, etc."
+                        [(ngModel)]="formData.productCode"
+                        required
+                        pattern="^P\d{2,}$"
+                        #productCode="ngModel"
+                      />
+                      <button
+                        type="button"
+                        class="btn btn-outline-secondary"
+                        (click)="generateProductCode()"
+                        title="Generate Code"
+                      >
+                        <i class="fas fa-refresh"></i>
+                      </button>
+                    </div>
+                    <div class="form-text">Format: P01, P02, P03, etc.</div>
+                    <div
+                      class="invalid-feedback"
+                      *ngIf="
+                        productCode.invalid &&
+                        (productCode.dirty || productCode.touched)
+                      "
+                    >
+                      <div *ngIf="productCode.errors?.['required']">
+                        Product code is required
+                      </div>
+                      <div *ngIf="productCode.errors?.['pattern']">
+                        Product code must be in format P01, P02, etc.
+                      </div>
+                    </div>
+                    <div
+                      class="valid-feedback"
+                      *ngIf="
+                        productCode.valid &&
+                        (productCode.dirty || productCode.touched)
+                      "
+                    >
+                      Looks good!
+                    </div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="imageFile" class="form-label"
+                      >Product Image</label
+                    >
+                    <input
+                      type="file"
+                      id="imageFile"
+                      name="imageFile"
+                      class="form-control"
+                      [class.is-invalid]="imageError"
+                      [class.is-valid]="selectedImageFile && !imageError"
+                      accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                      (change)="onImageSelected($event)"
+                    />
+                    <div class="form-text">
+                      Optional: Upload an image file (JPEG, PNG, GIF, WebP - Max
+                      5MB)
+                    </div>
+                    <div class="invalid-feedback" *ngIf="imageError">
+                      {{ imageError }}
+                    </div>
+                    <div
+                      class="valid-feedback"
+                      *ngIf="selectedImageFile && !imageError"
+                    >
+                      Image selected successfully!
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pricing Information -->
+              <div class="mb-4">
+                <h5 class="card-title">Pricing & Inventory</h5>
+                <hr />
+
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label for="price" class="form-label">Price ($) *</label>
+                    <input
+                      type="number"
+                      id="price"
+                      name="price"
+                      class="form-control"
+                      [class.is-invalid]="
+                        price.invalid && (price.dirty || price.touched)
+                      "
+                      [class.is-valid]="
+                        price.valid && (price.dirty || price.touched)
+                      "
+                      placeholder="0.00"
+                      [(ngModel)]="formData.price"
+                      min="0.01"
+                      max="999999"
+                      step="0.01"
+                      required
+                      #price="ngModel"
+                    />
+                    <div
+                      class="invalid-feedback"
+                      *ngIf="price.invalid && (price.dirty || price.touched)"
+                    >
+                      <div *ngIf="price.errors?.['required']">
+                        Price is required
+                      </div>
+                      <div *ngIf="price.errors?.['min']">
+                        Price must be greater than 0
+                      </div>
+                      <div *ngIf="price.errors?.['max']">
+                        Price must not exceed 999,999
+                      </div>
+                    </div>
+                    <div
+                      class="valid-feedback"
+                      *ngIf="price.valid && (price.dirty || price.touched)"
+                    >
+                      Looks good!
+                    </div>
+                  </div>
+
+                  <div class="col-md-4 mb-3">
+                    <label for="minimumQuantity" class="form-label"
+                      >Minimum Quantity *</label
+                    >
+                    <input
+                      type="number"
+                      id="minimumQuantity"
+                      name="minimumQuantity"
+                      class="form-control"
+                      [class.is-invalid]="
+                        minimumQuantity.invalid &&
+                        (minimumQuantity.dirty || minimumQuantity.touched)
+                      "
+                      [class.is-valid]="
+                        minimumQuantity.valid &&
+                        (minimumQuantity.dirty || minimumQuantity.touched)
+                      "
+                      placeholder="1"
+                      [(ngModel)]="formData.minimumQuantity"
+                      min="1"
+                      max="1000"
+                      required
+                      #minimumQuantity="ngModel"
+                    />
+                    <div
+                      class="invalid-feedback"
+                      *ngIf="
+                        minimumQuantity.invalid &&
+                        (minimumQuantity.dirty || minimumQuantity.touched)
+                      "
+                    >
+                      <div *ngIf="minimumQuantity.errors?.['required']">
+                        Minimum quantity is required
+                      </div>
+                      <div *ngIf="minimumQuantity.errors?.['min']">
+                        Minimum quantity must be at least 1
+                      </div>
+                      <div *ngIf="minimumQuantity.errors?.['max']">
+                        Minimum quantity must not exceed 1,000
+                      </div>
+                    </div>
+                    <div
+                      class="valid-feedback"
+                      *ngIf="
+                        minimumQuantity.valid &&
+                        (minimumQuantity.dirty || minimumQuantity.touched)
+                      "
+                    >
+                      Looks good!
+                    </div>
+                  </div>
+
+                  <div class="col-md-4 mb-3">
+                    <label for="discountRate" class="form-label"
+                      >Discount Rate (%)</label
+                    >
+                    <input
+                      type="number"
+                      id="discountRate"
+                      name="discountRate"
+                      class="form-control"
+                      [class.is-invalid]="
+                        discountRate.invalid &&
+                        (discountRate.dirty || discountRate.touched)
+                      "
+                      [class.is-valid]="
+                        discountRate.valid &&
+                        (discountRate.dirty || discountRate.touched)
+                      "
+                      placeholder="0"
+                      [(ngModel)]="formData.discountRate"
+                      min="0"
+                      max="100"
+                      step="1"
+                      #discountRate="ngModel"
+                    />
+                    <div class="form-text">
+                      Optional: Enter discount percentage (0-100, integer)
+                    </div>
+                    <div
+                      class="invalid-feedback"
+                      *ngIf="
+                        discountRate.invalid &&
+                        (discountRate.dirty || discountRate.touched)
+                      "
+                    >
+                      <div *ngIf="discountRate.errors?.['min']">
+                        Discount rate must be 0 or greater
+                      </div>
+                      <div *ngIf="discountRate.errors?.['max']">
+                        Discount rate must not exceed 100
+                      </div>
+                    </div>
+                    <div
+                      class="valid-feedback"
+                      *ngIf="
+                        discountRate.valid &&
+                        (discountRate.dirty || discountRate.touched)
+                      "
+                    >
+                      Looks good!
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Image Preview -->
+              <div *ngIf="imagePreviewUrl" class="mb-4">
+                <h5 class="card-title">Image Preview</h5>
+                <hr />
+                <div class="text-center position-relative">
+                  <img
+                    [src]="imagePreviewUrl"
+                    [alt]="formData.name"
+                    class="img-fluid rounded preview-image"
+                    style="
+                      max-height: 200px;
+                      max-width: 200px;
+                      object-fit: cover;
+                    "
+                    (error)="onImageError($event)"
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm position-absolute"
+                    style="top: 5px; right: 5px"
+                    (click)="removeImage()"
+                    title="Remove image"
+                  >
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+                <div class="text-center mt-2">
+                  <small class="text-muted">
+                    {{ selectedImageFile?.name }} ({{
+                      (selectedImageFile?.size! / 1024 / 1024).toFixed(2)
+                    }}
+                    MB)
+                  </small>
+                </div>
+              </div>
+
+              <!-- Form Actions -->
+              <div class="d-flex justify-content-end gap-2">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  (click)="onCancel()"
+                  [disabled]="isSaving"
+                >
+                  <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  [disabled]="isSaving"
+                >
+                  <span
+                    *ngIf="isSaving"
+                    class="spinner-border spinner-border-sm me-2"
+                    role="status"
+                  ></span>
+                  <i *ngIf="!isSaving" class="fas fa-save me-2"></i>
+                  <span *ngIf="isEditMode && !isSaving">Update Product</span>
+                  <span *ngIf="!isEditMode && !isSaving">Create Product</span>
+                  <span *ngIf="isSaving">Saving...</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

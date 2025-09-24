@@ -1,0 +1,381 @@
+<div class="register-page fade-in">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8">
+        <div class="card shadow-orange">
+          <div class="card-header bg-gradient text-center">
+            <h3 class="text-white mb-0">
+              <i class="fas fa-user-plus me-2"></i>Create Your Account
+            </h3>
+          </div>
+          <div class="card-body p-5">
+            <form (ngSubmit)="onRegister()" #registerForm="ngForm">
+              <!-- First Name Field -->
+              <div class="mb-4">
+                <label for="firstName" class="form-label fw-bold"
+                  >First Name</label
+                >
+                <div class="input-group">
+                  <span class="input-group-text bg-cyan text-white">
+                    <i class="fas fa-user"></i>
+                  </span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="firstName"
+                    [(ngModel)]="registerData.firstName"
+                    name="firstName"
+                    placeholder="Enter your first name"
+                    required
+                    minlength="2"
+                    [class.is-invalid]="hasFieldError('FirstName')"
+                  />
+                </div>
+                <div
+                  *ngIf="hasFieldError('FirstName')"
+                  class="invalid-feedback d-block"
+                >
+                  <div *ngFor="let error of getFieldErrors('FirstName')">
+                    {{ error }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Last Name Field -->
+              <div class="mb-4">
+                <label for="lastName" class="form-label fw-bold"
+                  >Last Name</label
+                >
+                <div class="input-group">
+                  <span class="input-group-text bg-cyan text-white">
+                    <i class="fas fa-user"></i>
+                  </span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="lastName"
+                    [(ngModel)]="registerData.lastName"
+                    name="lastName"
+                    placeholder="Enter your last name"
+                    required
+                    minlength="2"
+                    [class.is-invalid]="hasFieldError('LastName')"
+                  />
+                </div>
+                <div
+                  *ngIf="hasFieldError('LastName')"
+                  class="invalid-feedback d-block"
+                >
+                  <div *ngFor="let error of getFieldErrors('LastName')">
+                    {{ error }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Email Field -->
+              <div class="mb-4">
+                <label for="email" class="form-label fw-bold"
+                  >Email Address</label
+                >
+                <div class="input-group">
+                  <span class="input-group-text bg-orange text-white">
+                    <i class="fas fa-envelope"></i>
+                  </span>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    [(ngModel)]="registerData.email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                    email
+                    [class.is-invalid]="hasFieldError('Email')"
+                  />
+                </div>
+                <div
+                  *ngIf="hasFieldError('Email')"
+                  class="invalid-feedback d-block"
+                >
+                  <div *ngFor="let error of getFieldErrors('Email')">
+                    {{ error }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Phone Number Field -->
+              <div class="mb-4">
+                <label for="phoneNumber" class="form-label fw-bold"
+                  >Phone Number (Optional)</label
+                >
+                <div class="input-group">
+                  <span class="input-group-text bg-cyan text-white">
+                    <i class="fas fa-phone"></i>
+                  </span>
+                  <input
+                    type="tel"
+                    class="form-control"
+                    id="phoneNumber"
+                    [(ngModel)]="registerData.phoneNumber"
+                    name="phoneNumber"
+                    placeholder="Enter your phone number"
+                    [class.is-invalid]="hasFieldError('PhoneNumber')"
+                  />
+                </div>
+                <div
+                  *ngIf="hasFieldError('PhoneNumber')"
+                  class="invalid-feedback d-block"
+                >
+                  <div *ngFor="let error of getFieldErrors('PhoneNumber')">
+                    {{ error }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Password Field -->
+              <div class="mb-4">
+                <label for="password" class="form-label fw-bold"
+                  >Password</label
+                >
+                <div class="input-group">
+                  <span class="input-group-text bg-cyan text-white">
+                    <i class="fas fa-lock"></i>
+                  </span>
+                  <input
+                    [type]="showPassword ? 'text' : 'password'"
+                    class="form-control"
+                    id="password"
+                    [(ngModel)]="registerData.password"
+                    name="password"
+                    placeholder="Create a strong password"
+                    required
+                    minlength="6"
+                    [class.is-invalid]="hasFieldError('Password')"
+                  />
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    (click)="togglePassword()"
+                  >
+                    <i
+                      [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"
+                    ></i>
+                  </button>
+                </div>
+                <div
+                  *ngIf="hasFieldError('Password')"
+                  class="invalid-feedback d-block"
+                >
+                  <div *ngFor="let error of getFieldErrors('Password')">
+                    {{ error }}
+                  </div>
+                </div>
+
+                <!-- Password Strength Indicator -->
+                <div *ngIf="registerData.password.length > 0" class="mt-2">
+                  <small class="text-muted">Password requirements:</small>
+                  <div class="password-requirements mt-1">
+                    <div
+                      class="requirement"
+                      [class.text-success]="passwordStrength.minLength"
+                      [class.text-danger]="!passwordStrength.minLength"
+                    >
+                      <i
+                        [class]="
+                          passwordStrength.minLength
+                            ? 'fas fa-check'
+                            : 'fas fa-times'
+                        "
+                      ></i>
+                      At least 6 characters
+                    </div>
+                    <div
+                      class="requirement"
+                      [class.text-success]="passwordStrength.hasDigit"
+                      [class.text-danger]="!passwordStrength.hasDigit"
+                    >
+                      <i
+                        [class]="
+                          passwordStrength.hasDigit
+                            ? 'fas fa-check'
+                            : 'fas fa-times'
+                        "
+                      ></i>
+                      At least one digit (0-9)
+                    </div>
+                    <div
+                      class="requirement"
+                      [class.text-success]="passwordStrength.hasUpper"
+                      [class.text-danger]="!passwordStrength.hasUpper"
+                    >
+                      <i
+                        [class]="
+                          passwordStrength.hasUpper
+                            ? 'fas fa-check'
+                            : 'fas fa-times'
+                        "
+                      ></i>
+                      At least one uppercase letter (A-Z)
+                    </div>
+                    <div
+                      class="requirement"
+                      [class.text-success]="passwordStrength.hasLower"
+                      [class.text-danger]="!passwordStrength.hasLower"
+                    >
+                      <i
+                        [class]="
+                          passwordStrength.hasLower
+                            ? 'fas fa-check'
+                            : 'fas fa-times'
+                        "
+                      ></i>
+                      At least one lowercase letter (a-z)
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  *ngIf="registerData.password.length === 0"
+                  class="form-text"
+                >
+                  Password must be at least 6 characters long and contain at
+                  least one digit, one uppercase letter, and one lowercase
+                  letter.
+                </div>
+              </div>
+
+              <!-- Confirm Password Field -->
+              <div class="mb-4">
+                <label for="confirmPassword" class="form-label fw-bold"
+                  >Confirm Password</label
+                >
+                <div class="input-group">
+                  <span class="input-group-text bg-orange text-white">
+                    <i class="fas fa-lock"></i>
+                  </span>
+                  <input
+                    [type]="showConfirmPassword ? 'text' : 'password'"
+                    class="form-control"
+                    id="confirmPassword"
+                    [(ngModel)]="registerData.confirmPassword"
+                    name="confirmPassword"
+                    placeholder="Confirm your password"
+                    required
+                    [class.is-invalid]="
+                      hasFieldError('ConfirmPassword') || passwordMismatch
+                    "
+                  />
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    (click)="toggleConfirmPassword()"
+                  >
+                    <i
+                      [class]="
+                        showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'
+                      "
+                    ></i>
+                  </button>
+                </div>
+                <div
+                  *ngIf="hasFieldError('ConfirmPassword')"
+                  class="invalid-feedback d-block"
+                >
+                  <div *ngFor="let error of getFieldErrors('ConfirmPassword')">
+                    {{ error }}
+                  </div>
+                </div>
+                <div
+                  *ngIf="passwordMismatch && !hasFieldError('ConfirmPassword')"
+                  class="text-danger small mt-1"
+                >
+                  <i class="fas fa-exclamation-triangle me-1"></i>Passwords do
+                  not match
+                </div>
+              </div>
+
+              <!-- Terms and Conditions -->
+              <div class="mb-4">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="agreeTerms"
+                    [(ngModel)]="agreeTerms"
+                    name="agreeTerms"
+                    required
+                  />
+                  <label class="form-check-label" for="agreeTerms">
+                    I agree to the
+                    <a href="#" class="text-primary">Terms and Conditions</a>
+                    and <a href="#" class="text-primary">Privacy Policy</a>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Newsletter Subscription -->
+              <div class="mb-4">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="newsletter"
+                    [(ngModel)]="subscribeNewsletter"
+                    name="newsletter"
+                  />
+                  <label class="form-check-label" for="newsletter">
+                    Subscribe to our newsletter for updates and special offers
+                  </label>
+                </div>
+              </div>
+
+              <!-- Error Message -->
+              <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i
+                >{{ errorMessage }}
+              </div>
+
+              <!-- Success Message -->
+              <div
+                *ngIf="successMessage"
+                class="alert alert-success"
+                role="alert"
+              >
+                <i class="fas fa-check-circle me-2"></i>{{ successMessage }}
+              </div>
+
+              <!-- Register Button -->
+              <div class="d-grid mb-4">
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-lg"
+                  [disabled]="
+                    isLoading || !registerForm.valid || passwordMismatch
+                  "
+                >
+                  <span
+                    *ngIf="isLoading"
+                    class="spinner-border spinner-border-sm me-2"
+                  ></span>
+                  <i *ngIf="!isLoading" class="fas fa-user-plus me-2"></i>
+                  {{ isLoading ? "Creating Account..." : "Create Account" }}
+                </button>
+              </div>
+
+              <!-- Login Link -->
+              <div class="text-center">
+                <p class="text-muted mb-1">Already have an account?</p>
+                <a
+                  routerLink="/login"
+                  class="text-secondary fw-bold text-decoration-none"
+                >
+                  <i class="fas fa-sign-in-alt me-1"></i>Login Here
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

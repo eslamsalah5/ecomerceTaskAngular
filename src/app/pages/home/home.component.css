@@ -1,0 +1,53 @@
+/* Hero */
+.hero-section {
+  background: radial-gradient(
+      1200px 400px at 10% 10%,
+      rgba(59, 130, 246, 0.25),
+      transparent 60%
+    ),
+    radial-gradient(
+      1000px 380px at 90% 30%,
+      rgba(14, 165, 233, 0.22),
+      transparent 60%
+    ),
+    linear-gradient(135deg, #111827 0%, #0b1220 100%);
+}
+.text-gradient {
+  background: linear-gradient(90deg, #60a5fa 0%, #a78bfa 50%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Features */
+.feature-card {
+  background: #ffffff;
+  border: 1px solid #eef2f7;
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+.feature-card i {
+  color: #2563eb;
+}
+
+/* Featured products */
+.featured-products {
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+}
+.featured-card .card-img-placeholder {
+  background: linear-gradient(135deg, #94a3b8, #64748b);
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+.featured-card:hover {
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.12);
+}
+
+/* Newsletter */
+.newsletter-section {
+  background: linear-gradient(135deg, #0b1220 0%, #111827 100%);
+}
