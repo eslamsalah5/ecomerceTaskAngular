@@ -42,7 +42,7 @@
         />
         <span *ngIf="hasDiscount" class="position-absolute top-0 start-0 m-3">
           <span class="badge bg-danger fs-6"
-            >-{{ product.discountRate }}% OFF</span
+            >-{{ product.discountPercentage }}% OFF</span
           >
         </span>
       </div>
@@ -59,11 +59,23 @@
       <h1 class="h2 mb-3">{{ product.name }}</h1>
       <p class="text-muted mb-3">SKU: {{ product.productCode }}</p>
 
+      <!-- Stock Info -->
+      <div class="mb-3">
+        <span
+          class="badge"
+          [class.bg-success]="product.stock > 10"
+          [class.bg-warning]="product.stock > 0 && product.stock <= 10"
+          [class.bg-danger]="product.stock === 0"
+        >
+          {{ product.stock > 0 ? product.stock + " in stock" : "Out of stock" }}
+        </span>
+      </div>
+
       <!-- Price Section -->
       <div class="mb-4">
         <div class="d-flex align-items-center gap-3">
           <span class="h3 text-primary mb-0"
-            >${{ discountedPrice | number : "1.2-2" }}</span
+            >${{ product.finalPrice | number : "1.2-2" }}</span
           >
           <span
             *ngIf="hasDiscount"
@@ -74,7 +86,7 @@
         </div>
         <div *ngIf="hasDiscount" class="text-success">
           You save ${{ savings | number : "1.2-2" }} ({{
-            product.discountRate
+            product.discountPercentage
           }}% off)
         </div>
       </div>
@@ -86,7 +98,7 @@
           <button
             class="btn btn-outline-secondary"
             (click)="decrementQuantity()"
-            [disabled]="quantity <= (product.minimumQuantity || 1)"
+            [disabled]="quantity <= 1"
           >
             <i class="fas fa-minus"></i>
           </button>
@@ -95,7 +107,8 @@
             class="form-control text-center"
             style="width: 80px"
             [(ngModel)]="quantity"
-            [min]="product.minimumQuantity || 1"
+            (ngModelChange)="onQuantityChange()"
+            [min]="1"
             [max]="maxQuantity"
           />
           <button
@@ -106,9 +119,14 @@
             <i class="fas fa-plus"></i>
           </button>
         </div>
-        <small class="text-muted"
-          >Minimum quantity: {{ product.minimumQuantity || 1 }}</small
+        <small class="text-muted">Available: {{ product.stock }}</small>
+        <small
+          *ngIf="quantity >= maxQuantity"
+          class="d-block text-warning mt-1"
         >
+          <i class="fas fa-exclamation-triangle"></i> Maximum available quantity
+          reached
+        </small>
       </div>
 
       <!-- Total Price -->

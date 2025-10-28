@@ -6,14 +6,17 @@ export interface Product {
   name: string;
   imageUrl?: string | null;
   price: number;
-  minimumQuantity: number;
-  discountRate?: number | null;
+  stock: number;
+  discountPercentage: number | null;
+  finalPrice: number;
 }
 
 // Product search and filter parameters
 export interface ProductSearchParams {
   pageNumber?: number;
   pageSize?: number;
+  sortBy?: string;
+  sortOrder?: string;
   category?: string;
   minPrice?: number;
   maxPrice?: number;
@@ -27,8 +30,8 @@ export interface ProductCreateRequest {
   name: string;
   imageUrl?: string;
   price: number;
-  minimumQuantity: number;
-  discountRate?: number;
+  stock: number;
+  discountPercentage: number;
 }
 
 // Product update request

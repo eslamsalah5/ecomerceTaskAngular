@@ -1,0 +1,68 @@
+.cart-item {
+  transition: all 0.2s ease-in-out;
+}
+
+.cart-item:hover {
+  background-color: #f8f9fa;
+}
+
+.cart-item:last-child {
+  border-bottom: none !important;
+}
+
+.input-group-sm .form-control {
+  max-width: 70px;
+}
+
+.sticky-lg-top {
+  position: sticky;
+  top: 20px;
+  z-index: 1020;
+}
+
+/* Smooth transitions for buttons */
+.btn {
+  transition: all 0.3s ease;
+}
+
+/* Image hover effect */
+.cart-item img {
+  transition: transform 0.3s ease;
+}
+
+.cart-item:hover img {
+  transform: scale(1.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .cart-item {
+    padding: 1rem !important;
+  }
+
+  .cart-item .row {
+    row-gap: 0.75rem !important;
+  }
+
+  .input-group-sm {
+    font-size: 0.875rem;
+  }
+
+  .input-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .card-header h5 {
+    font-size: 1rem;
+  }
+
+  .fs-5 {
+    font-size: 1rem !important;
+  }
+
+  .fs-4 {
+    font-size: 1.25rem !important;
+  }
+}

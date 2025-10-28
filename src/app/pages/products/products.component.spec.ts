@@ -35,10 +35,19 @@ describe('ProductsComponent', () => {
   let fixture: ComponentFixture<ProductsComponent>;
   let productServiceSpy: jasmine.SpyObj<ProductService>;
 
+  const mockPaginatedResponse = {
+    data: mockProducts,
+    currentPage: 1,
+    totalPages: 1,
+    pageSize: 12,
+    totalCount: mockProducts.length,
+    hasPrevious: false,
+    hasNext: false,
+  };
+
   beforeEach(async () => {
     const spy = jasmine.createSpyObj('ProductService', [
-      'getAllProducts',
-      'getCategories',
+      'getProductsWithPagination',
     ]);
     await TestBed.configureTestingModule({
       imports: [ProductsComponent, FormsModule],
@@ -55,49 +64,32 @@ describe('ProductsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load products and categories on init', () => {
-    productServiceSpy.getAllProducts.and.returnValue(of(mockProducts));
-    productServiceSpy.getCategories.and.returnValue(of(mockCategories));
+  it('should load products on init', () => {
+    productServiceSpy.getProductsWithPagination.and.returnValue(
+      of(mockPaginatedResponse)
+    );
     component.ngOnInit();
-    expect(productServiceSpy.getAllProducts).toHaveBeenCalled();
-    expect(productServiceSpy.getCategories).toHaveBeenCalled();
-    expect(component.allProducts).toEqual(mockProducts);
-    expect(component.filteredProducts).toEqual(mockProducts);
-    expect(component.categories).toEqual(mockCategories);
+    expect(productServiceSpy.getProductsWithPagination).toHaveBeenCalled();
+    expect(component.products).toEqual(mockProducts);
     expect(component.loading).toBeFalse();
   });
 
   it('should handle error when loading products', () => {
-    productServiceSpy.getAllProducts.and.returnValue(
+    productServiceSpy.getProductsWithPagination.and.returnValue(
       throwError(() => new Error('fail'))
     );
-    productServiceSpy.getCategories.and.returnValue(of([]));
     component.ngOnInit();
     expect(component.error).toContain('Failed to load products');
     expect(component.loading).toBeFalse();
   });
 
-  it('should filter products by category', () => {
-    component.allProducts = mockProducts;
-    component.selectedCategory = 'Clothing';
-    component.filterProducts();
-    expect(component.filteredProducts).toEqual([mockProducts[1]]);
-  });
-
-  it('should show all products when no category selected', () => {
-    component.allProducts = mockProducts;
-    component.selectedCategory = '';
-    component.filterProducts();
-    expect(component.filteredProducts).toEqual(mockProducts);
-  });
-
-  it('should clear filters', () => {
-    component.allProducts = mockProducts;
-    component.selectedCategory = 'Electronics';
-    component.filterProducts();
-    component.clearFilters();
-    expect(component.selectedCategory).toBe('');
-    expect(component.filteredProducts).toEqual(mockProducts);
+  it('should handle error when loading products', () => {
+    productServiceSpy.getProductsWithPagination.and.returnValue(
+      throwError(() => new Error('fail'))
+    );
+    component.ngOnInit();
+    expect(component.error).toContain('Failed to load products');
+    expect(component.loading).toBeFalse();
   });
 
   it('should calculate discounted price', () => {

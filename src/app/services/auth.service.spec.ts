@@ -2,6 +2,7 @@ import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { AuthService } from './auth.service';
 import { HttpClient } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
+import { AuthResponse, User } from '../models/auth.models';
 
 const mockAuthResponse = {
   success: true,

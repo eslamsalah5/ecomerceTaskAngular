@@ -301,103 +301,93 @@
                   </div>
 
                   <div class="col-md-4 mb-3">
-                    <label for="minimumQuantity" class="form-label"
-                      >Minimum Quantity *</label
-                    >
+                    <label for="stock" class="form-label">Stock *</label>
                     <input
                       type="number"
-                      id="minimumQuantity"
-                      name="minimumQuantity"
+                      id="stock"
+                      name="stock"
                       class="form-control"
                       [class.is-invalid]="
-                        minimumQuantity.invalid &&
-                        (minimumQuantity.dirty || minimumQuantity.touched)
+                        stock.invalid && (stock.dirty || stock.touched)
                       "
                       [class.is-valid]="
-                        minimumQuantity.valid &&
-                        (minimumQuantity.dirty || minimumQuantity.touched)
+                        stock.valid && (stock.dirty || stock.touched)
                       "
-                      placeholder="1"
-                      [(ngModel)]="formData.minimumQuantity"
-                      min="1"
-                      max="1000"
+                      placeholder="0"
+                      [(ngModel)]="formData.stock"
+                      min="0"
+                      max="100000"
                       required
-                      #minimumQuantity="ngModel"
+                      #stock="ngModel"
                     />
                     <div
                       class="invalid-feedback"
-                      *ngIf="
-                        minimumQuantity.invalid &&
-                        (minimumQuantity.dirty || minimumQuantity.touched)
-                      "
+                      *ngIf="stock.invalid && (stock.dirty || stock.touched)"
                     >
-                      <div *ngIf="minimumQuantity.errors?.['required']">
-                        Minimum quantity is required
+                      <div *ngIf="stock.errors?.['required']">
+                        Stock is required
                       </div>
-                      <div *ngIf="minimumQuantity.errors?.['min']">
-                        Minimum quantity must be at least 1
+                      <div *ngIf="stock.errors?.['min']">
+                        Stock must be 0 or greater
                       </div>
-                      <div *ngIf="minimumQuantity.errors?.['max']">
-                        Minimum quantity must not exceed 1,000
+                      <div *ngIf="stock.errors?.['max']">
+                        Stock must not exceed 100,000
                       </div>
                     </div>
                     <div
                       class="valid-feedback"
-                      *ngIf="
-                        minimumQuantity.valid &&
-                        (minimumQuantity.dirty || minimumQuantity.touched)
-                      "
+                      *ngIf="stock.valid && (stock.dirty || stock.touched)"
                     >
                       Looks good!
                     </div>
                   </div>
 
                   <div class="col-md-4 mb-3">
-                    <label for="discountRate" class="form-label"
-                      >Discount Rate (%)</label
+                    <label for="discountPercentage" class="form-label"
+                      >Discount Percentage (%)</label
                     >
                     <input
                       type="number"
-                      id="discountRate"
-                      name="discountRate"
+                      id="discountPercentage"
+                      name="discountPercentage"
                       class="form-control"
                       [class.is-invalid]="
-                        discountRate.invalid &&
-                        (discountRate.dirty || discountRate.touched)
+                        discountPercentage.invalid &&
+                        (discountPercentage.dirty || discountPercentage.touched)
                       "
                       [class.is-valid]="
-                        discountRate.valid &&
-                        (discountRate.dirty || discountRate.touched)
+                        discountPercentage.valid &&
+                        (discountPercentage.dirty || discountPercentage.touched)
                       "
                       placeholder="0"
-                      [(ngModel)]="formData.discountRate"
+                      [(ngModel)]="formData.discountPercentage"
                       min="0"
                       max="100"
                       step="1"
-                      #discountRate="ngModel"
+                      #discountPercentage="ngModel"
                     />
                     <div class="form-text">
-                      Optional: Enter discount percentage (0-100, integer)
+                      Optional: Enter discount percentage (0-100, integer only)
                     </div>
                     <div
                       class="invalid-feedback"
                       *ngIf="
-                        discountRate.invalid &&
-                        (discountRate.dirty || discountRate.touched)
+                        discountPercentage.invalid &&
+                        (discountPercentage.dirty || discountPercentage.touched)
                       "
                     >
-                      <div *ngIf="discountRate.errors?.['min']">
-                        Discount rate must be 0 or greater
+                      <div *ngIf="discountPercentage.errors?.['min']">
+                        Discount percentage must be 0 or greater
                       </div>
-                      <div *ngIf="discountRate.errors?.['max']">
-                        Discount rate must not exceed 100
+                      <div *ngIf="discountPercentage.errors?.['max']">
+                        Discount percentage must not exceed 100
                       </div>
                     </div>
                     <div
                       class="valid-feedback"
                       *ngIf="
-                        discountRate.valid &&
-                        (discountRate.dirty || discountRate.touched)
+                        discountPercentage.valid &&
+                        (discountPercentage.dirty || discountPercentage.touched)
                       "
                     >
                       Looks good!

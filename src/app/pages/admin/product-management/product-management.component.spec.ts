@@ -45,9 +45,19 @@ describe('ProductManagementComponent', () => {
     },
   ];
 
+  const mockPaginatedResponse = {
+    data: mockProducts,
+    currentPage: 1,
+    totalPages: 1,
+    pageSize: 10,
+    totalCount: mockProducts.length,
+    hasPrevious: false,
+    hasNext: false,
+  };
+
   beforeEach(async () => {
     const productServiceSpy = jasmine.createSpyObj('ProductService', [
-      'getAllProductsForAdmin',
+      'getProductsWithPagination',
       'deleteProduct',
     ]);
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
@@ -69,7 +79,9 @@ describe('ProductManagementComponent', () => {
   });
 
   beforeEach(() => {
-    mockProductService.getAllProductsForAdmin.and.returnValue(of(mockProducts));
+    mockProductService.getProductsWithPagination.and.returnValue(
+      of(mockPaginatedResponse)
+    );
     mockProductService.deleteProduct.and.returnValue(of(true));
   });
 
@@ -81,14 +93,14 @@ describe('ProductManagementComponent', () => {
     it('should load products on init', () => {
       component.ngOnInit();
 
-      expect(mockProductService.getAllProductsForAdmin).toHaveBeenCalled();
+      expect(mockProductService.getProductsWithPagination).toHaveBeenCalled();
       expect(component.products).toEqual(mockProducts);
-      expect(component.totalItems).toBe(3);
+      expect(component.totalCount).toBe(3);
       expect(component.isLoading).toBeFalse();
     });
 
     it('should handle error when loading products', () => {
-      mockProductService.getAllProductsForAdmin.and.returnValue(
+      mockProductService.getProductsWithPagination.and.returnValue(
         throwError({ message: 'Failed to load' })
       );
 
@@ -99,36 +111,17 @@ describe('ProductManagementComponent', () => {
     });
   });
 
-  // Search and filtering removed by request
-
-  // Category helpers removed with filters
-
   describe('Pagination', () => {
-    beforeEach(() => {
-      component.products = mockProducts;
-      component.totalItems = mockProducts.length;
-      component.itemsPerPage = 2;
-    });
-
-    it('should calculate total pages correctly', () => {
-      expect(component.getTotalPages()).toBe(2);
-    });
-
-    it('should get paginated products for first page', () => {
-      component.currentPage = 1;
-      const paginatedProducts = component.getPaginatedProducts();
-      expect(paginatedProducts).toEqual([mockProducts[0], mockProducts[1]]);
-    });
-
-    it('should get paginated products for second page', () => {
-      component.currentPage = 2;
-      const paginatedProducts = component.getPaginatedProducts();
-      expect(paginatedProducts).toEqual([mockProducts[2]]);
-    });
-
     it('should navigate to valid page', () => {
+      const page2Response = {
+        ...mockPaginatedResponse,
+        currentPage: 2,
+      };
+      mockProductService.getProductsWithPagination.and.returnValue(
+        of(page2Response)
+      );
       component.goToPage(2);
-      expect(component.currentPage).toBe(2);
+      expect(mockProductService.getProductsWithPagination).toHaveBeenCalled();
     });
 
     it('should not navigate to invalid page (too low)', () => {
@@ -168,10 +161,9 @@ describe('ProductManagementComponent', () => {
     beforeEach(() => {
       spyOn(window, 'confirm');
       spyOn(window, 'alert');
-      // loadProducts is no longer called on success (optimistic update)
     });
 
-    it('should delete product when user confirms (optimistic update)', () => {
+    it('should delete product when user confirms and reload products', () => {
       (window.confirm as jasmine.Spy).and.returnValue(true);
       component.products = [...mockProducts];
       component.deleteProduct(mockProducts[0]);
@@ -180,12 +172,10 @@ describe('ProductManagementComponent', () => {
         'Are you sure you want to delete "Smartphone"?'
       );
       expect(mockProductService.deleteProduct).toHaveBeenCalledWith(1);
-      // Optimistic update removes the item locally
-      expect(component.products.find((p) => p.id === 1)).toBeUndefined();
-      expect(component.totalItems).toBe(2);
       expect(window.alert).toHaveBeenCalledWith(
         'Product deleted successfully!'
       );
+      expect(mockProductService.getProductsWithPagination).toHaveBeenCalled();
     });
 
     it('should not delete product when user cancels', () => {
@@ -194,7 +184,6 @@ describe('ProductManagementComponent', () => {
       component.deleteProduct(mockProducts[0]);
 
       expect(mockProductService.deleteProduct).not.toHaveBeenCalled();
-      // No further actions should be taken
     });
 
     it('should handle delete error', () => {
@@ -249,7 +238,7 @@ describe('ProductManagementComponent', () => {
     });
 
     it('should hide loading state after error', () => {
-      mockProductService.getAllProductsForAdmin.and.returnValue(
+      mockProductService.getProductsWithPagination.and.returnValue(
         throwError({ message: 'Error' })
       );
 
@@ -261,13 +250,21 @@ describe('ProductManagementComponent', () => {
 
   describe('Edge Cases', () => {
     it('should handle empty product list', () => {
-      mockProductService.getAllProductsForAdmin.and.returnValue(of([]));
+      const emptyResponse = {
+        ...mockPaginatedResponse,
+        data: [],
+        totalCount: 0,
+        totalPages: 0,
+      };
+      mockProductService.getProductsWithPagination.and.returnValue(
+        of(emptyResponse)
+      );
 
       component.ngOnInit();
 
       expect(component.products).toEqual([]);
-      expect(component.totalItems).toBe(0);
-      expect(component.getTotalPages()).toBe(0);
+      expect(component.totalCount).toBe(0);
+      expect(component.totalPages).toBe(0);
     });
   });
 });

@@ -2,7 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { AuthService, User } from '../../../services/auth.service';
+import { AuthService } from '../../../services/auth.service';
+import { CartService } from '../../../services/cart.service';
+import { User } from '../../../models/auth.models';
 
 @Component({
   selector: 'app-header',
@@ -13,9 +15,14 @@ import { AuthService, User } from '../../../services/auth.service';
 export class HeaderComponent implements OnInit, OnDestroy {
   isAuthenticated = false;
   currentUser: User | null = null;
+  cartItemCount = 0;
   private authSubscription: Subscription = new Subscription();
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private cartService: CartService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     // Subscribe to authentication status
@@ -29,6 +36,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.authSubscription.add(
       this.authService.currentUser$.subscribe((user) => {
         this.currentUser = user;
+      })
+    );
+
+    // Subscribe to cart item count
+    this.authSubscription.add(
+      this.cartService.cartItemCount$.subscribe((count) => {
+        this.cartItemCount = count;
       })
     );
   }

@@ -38,12 +38,12 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   loadDashboardData(): void {
     this.isLoading = true;
     this.subscription.add(
-      this.productService.getAllProductsForAdmin().subscribe({
-        next: (products) => {
-          this.products = products;
-          this.totalProducts = products.length;
+      this.productService.getProductsWithPagination(1, 100).subscribe({
+        next: (response) => {
+          this.products = response.data;
+          this.totalProducts = response.totalCount;
           // Get last 5 products as recent
-          this.recentProducts = products.slice(-5).reverse();
+          this.recentProducts = response.data.slice(-5).reverse();
           this.isLoading = false;
         },
         error: (error) => {

@@ -5,6 +5,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { ProductsComponent } from './pages/products/products.component';
 import { ProductDetailComponent } from './pages/product-detail/product-detail.component';
+import { CartComponent } from './pages/cart/cart.component';
 import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 import { ProductManagementComponent } from './pages/admin/product-management/product-management.component';
 import { ProductFormComponent } from './pages/admin/product-form/product-form.component';
@@ -22,6 +23,7 @@ export const routes: Routes = [
     component: ProductDetailComponent,
     canActivate: [authGuard],
   },
+  { path: 'cart', component: CartComponent, canActivate: [authGuard] },
   // Admin routes
   {
     path: 'admin/dashboard',

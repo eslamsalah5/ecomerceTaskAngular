@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ProductService } from '../../services/product.service';
+import { CartService } from '../../services/cart.service';
 import { Product } from '../../models';
 import { getPlaceholderImage } from '../../shared/utils/image-utils';
 
@@ -18,6 +19,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   quantity: number = 1;
   loading: boolean = true;
   error: string | null = null;
+  addingToCart: boolean = false;
   currentImageUrl: string = '';
 
   private subscriptions: Subscription = new Subscription();
@@ -25,7 +27,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private productService: ProductService
+    private productService: ProductService,
+    private cartService: CartService
   ) {}
 
   ngOnInit(): void {
@@ -50,7 +53,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         next: (product) => {
           if (product) {
             this.product = product;
-            this.quantity = product.minimumQuantity || 1;
+            this.quantity = 1; // Start with quantity 1
             this.currentImageUrl =
               product.imageUrl || getPlaceholderImage(product.category);
           } else {
@@ -68,15 +71,17 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   }
 
   get hasDiscount(): boolean {
-    return !!(this.product?.discountRate && this.product.discountRate > 0);
+    return !!(
+      this.product &&
+      this.product.discountPercentage &&
+      this.product.discountPercentage > 0
+    );
   }
 
   get discountedPrice(): number {
     if (!this.product) return 0;
-    if (this.hasDiscount) {
-      return this.product.price * (1 - this.product.discountRate! / 100);
-    }
-    return this.product.price;
+    // Backend returns finalPrice already calculated
+    return this.product.finalPrice;
   }
 
   get totalPrice(): number {
@@ -85,42 +90,69 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
   get savings(): number {
     if (!this.product || !this.hasDiscount) return 0;
-    return (this.product.price - this.discountedPrice) * this.quantity;
+    return (this.product.price - this.product.finalPrice) * this.quantity;
   }
 
   get maxQuantity(): number {
-    return 10; // Could be based on stock level
+    return this.product?.stock || 10;
   }
 
   incrementQuantity(): void {
     if (this.quantity < this.maxQuantity) {
       this.quantity++;
+    } else {
+      // Show alert when trying to exceed stock
+      alert(`Sorry, only ${this.maxQuantity} items available in stock!`);
     }
   }
 
   decrementQuantity(): void {
-    const minQty = this.product?.minimumQuantity || 1;
-    if (this.quantity > minQty) {
+    if (this.quantity > 1) {
       this.quantity--;
     }
   }
 
+  onQuantityChange(): void {
+    // Ensure quantity doesn't exceed stock
+    if (this.quantity > this.maxQuantity) {
+      this.quantity = this.maxQuantity;
+      alert(`Maximum available quantity is ${this.maxQuantity}`);
+    }
+    // Ensure quantity is at least 1
+    if (this.quantity < 1) {
+      this.quantity = 1;
+    }
+  }
+
   addToCart(): void {
-    if (!this.product) return;
+    if (!this.product || this.addingToCart) return;
 
-    // Here you would call cart service
-    console.log(`Adding ${this.quantity}x ${this.product.name} to cart`);
-
-    // Show success message (you can implement toast notification)
-    alert(`Added ${this.quantity}x ${this.product.name} to cart!`);
+    this.addingToCart = true;
+    this.cartService.addToCart(this.product.id, this.quantity).subscribe({
+      next: () => {
+        this.addingToCart = false;
+        alert(
+          `Added ${this.quantity}x ${this.product!.name} to cart successfully!`
+        );
+      },
+      error: (error) => {
+        this.addingToCart = false;
+        console.error('Error adding to cart:', error);
+        alert(
+          error.error?.message ||
+            'Failed to add item to cart. Please try again.'
+        );
+      },
+    });
   }
 
   buyNow(): void {
     if (!this.product) return;
 
-    // Here you would navigate to checkout with this product
-    console.log(`Buy now: ${this.quantity}x ${this.product.name}`);
-    alert('Redirecting to checkout...');
+    this.addToCart();
+    setTimeout(() => {
+      this.router.navigate(['/cart']);
+    }, 500);
   }
 
   goBack(): void {

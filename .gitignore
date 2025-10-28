@@ -22,3 +22,14 @@ Thumbs.db
 
 # Angular build
 .angular/
+
+# Docs: ignore everything in docs/ except the main README
+docs/**
+!docs/README.md
+
+# Additional READMEs (keep only root README.md)
+src/**/README.md
+!README.md
+
+# GitHub configs
+.github/**

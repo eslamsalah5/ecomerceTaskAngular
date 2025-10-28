@@ -102,6 +102,22 @@
       <div class="d-flex align-items-center">
         <!-- Authenticated User Actions -->
         <ng-container *ngIf="isAuthenticated">
+          <!-- Cart Icon with Badge -->
+          <a
+            routerLink="/cart"
+            class="btn btn-ghost-light position-relative me-2"
+            title="Shopping Cart"
+          >
+            <i class="bi bi-cart3 fs-5"></i>
+            <span
+              *ngIf="cartItemCount > 0"
+              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+            >
+              {{ cartItemCount }}
+              <span class="visually-hidden">items in cart</span>
+            </span>
+          </a>
+
           <!-- User Menu Dropdown -->
           <div class="dropdown">
             <button

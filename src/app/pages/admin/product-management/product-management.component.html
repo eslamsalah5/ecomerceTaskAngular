@@ -62,18 +62,13 @@
                 <th>Category</th>
                 <th>Code</th>
                 <th>Price</th>
-                <th>Min Qty</th>
+                <th>Stock</th>
                 <th>Discount</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr
-                *ngFor="
-                  let product of getPaginatedProducts();
-                  trackBy: trackByProductId
-                "
-              >
+              <tr *ngFor="let product of products; trackBy: trackByProductId">
                 <td>
                   <img
                     [src]="product.imageUrl"
@@ -95,15 +90,47 @@
                   <span class="fw-bold text-success"
                     >${{ product.price | number : "1.2-2" }}</span
                   >
+                  <div
+                    *ngIf="
+                      product.discountPercentage &&
+                      product.discountPercentage > 0
+                    "
+                    class="small text-muted"
+                  >
+                    <del>${{ product.price | number : "1.2-2" }}</del>
+                    <span class="text-success ms-1"
+                      >${{ product.finalPrice | number : "1.2-2" }}</span
+                    >
+                  </div>
                 </td>
                 <td>
-                  {{ product.minimumQuantity }}
-                </td>
-                <td>
-                  <span *ngIf="product.discountRate" class="badge bg-warning">
-                    {{ product.discountRate }}%
+                  <span
+                    class="badge"
+                    [class.bg-success]="product.stock > 10"
+                    [class.bg-warning]="
+                      product.stock > 0 && product.stock <= 10
+                    "
+                    [class.bg-danger]="product.stock === 0"
+                  >
+                    {{ product.stock }}
                   </span>
-                  <span *ngIf="!product.discountRate" class="text-muted"
+                </td>
+                <td>
+                  <span
+                    *ngIf="
+                      product.discountPercentage &&
+                      product.discountPercentage > 0
+                    "
+                    class="badge bg-warning"
+                  >
+                    {{ product.discountPercentage }}%
+                  </span>
+                  <span
+                    *ngIf="
+                      !product.discountPercentage ||
+                      product.discountPercentage === 0
+                    "
+                    class="text-muted"
                     >-</span
                   >
                 </td>
@@ -152,46 +179,40 @@
       <div *ngIf="products.length > 0" class="card-footer bg-light">
         <div class="d-flex justify-content-between align-items-center">
           <div class="text-muted small">
-            Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
-            {{ Math.min(currentPage * itemsPerPage, totalItems) }} of
-            {{ totalItems }} results
+            Showing {{ (currentPage - 1) * pageSize + 1 }} to
+            {{ (currentPage - 1) * pageSize + products.length }} of
+            {{ totalCount }} results
           </div>
 
-          <nav *ngIf="getTotalPages() > 1">
+          <nav *ngIf="totalPages > 1">
             <ul class="pagination pagination-sm mb-0">
-              <li class="page-item" [class.disabled]="currentPage === 1">
+              <li class="page-item" [class.disabled]="!hasPrevious">
                 <button
                   class="page-link"
-                  (click)="goToPage(currentPage - 1)"
-                  [disabled]="currentPage === 1"
+                  (click)="previousPage()"
+                  [disabled]="!hasPrevious"
                 >
-                  <i class="fas fa-chevron-left"></i>
+                  <i class="fas fa-chevron-left"></i> Previous
                 </button>
               </li>
 
               <li
-                *ngFor="
-                  let page of [].constructor(getTotalPages());
-                  let i = index
-                "
+                *ngFor="let page of getPageNumbers()"
                 class="page-item"
-                [class.active]="currentPage === i + 1"
+                [class.active]="currentPage === page"
               >
-                <button class="page-link" (click)="goToPage(i + 1)">
-                  {{ i + 1 }}
+                <button class="page-link" (click)="goToPage(page)">
+                  {{ page }}
                 </button>
               </li>
 
-              <li
-                class="page-item"
-                [class.disabled]="currentPage === getTotalPages()"
-              >
+              <li class="page-item" [class.disabled]="!hasNext">
                 <button
                   class="page-link"
-                  (click)="goToPage(currentPage + 1)"
-                  [disabled]="currentPage === getTotalPages()"
+                  (click)="nextPage()"
+                  [disabled]="!hasNext"
                 >
-                  <i class="fas fa-chevron-right"></i>
+                  Next <i class="fas fa-chevron-right"></i>
                 </button>
               </li>
             </ul>

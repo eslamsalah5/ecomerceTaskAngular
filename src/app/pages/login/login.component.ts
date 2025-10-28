@@ -40,13 +40,26 @@ export class LoginComponent {
           if (response.success) {
             this.router.navigate(['/home']);
           } else {
-            this.errorMessage = response.message || 'Invalid email or password';
+            this.errorMessage = response.message || 'Login failed';
           }
         },
-        error: (error) => {
+        error: (err) => {
           this.isLoading = false;
-          this.errorMessage =
-            error.message || 'Login failed. Please try again.';
+
+          if (err?.title) {
+            this.errorMessage = err.title;
+          } else if (err?.message) {
+            this.errorMessage = err.message;
+          } else if (err?.errors) {
+            const firstError = Object.values(err.errors)[0];
+            this.errorMessage = Array.isArray(firstError)
+              ? firstError[0]
+              : 'Login failed';
+          } else {
+            this.errorMessage = 'Login failed. Please try again.';
+          }
+
+          console.error('Login error:', err);
         },
       });
   }

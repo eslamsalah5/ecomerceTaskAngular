@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
-import { AuthService, RegisterRequest } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service';
+import { RegisterRequest } from '../../models/auth.models';
 
 @Component({
   selector: 'app-register',
@@ -99,14 +100,22 @@ export class RegisterComponent {
             this.router.navigate(['/home']);
           }, 2000);
         } else {
-          this.errorMessage =
-            response.message || 'Registration failed. Please try again.';
+          this.errorMessage = response.message || 'Registration failed';
           this.validationErrors = response.errors || {};
         }
       },
-      error: () => {
+      error: (err) => {
         this.isLoading = false;
-        this.errorMessage = 'Registration failed. Please try again.';
+
+        if (err?.title) {
+          this.errorMessage = err.title;
+        } else if (err?.message) {
+          this.errorMessage = err.message;
+        } else {
+          this.errorMessage = 'Registration failed. Please try again.';
+        }
+
+        this.validationErrors = err?.errors || {};
       },
     });
   }

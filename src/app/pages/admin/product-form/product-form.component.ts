@@ -26,8 +26,8 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     productCode: '',
     name: '',
     price: '',
-    minimumQuantity: '1',
-    discountRate: '0',
+    stock: '0',
+    discountPercentage: '0',
   };
 
   selectedImageFile: File | null = null;
@@ -78,8 +78,8 @@ export class ProductFormComponent implements OnInit, OnDestroy {
               productCode: product.productCode,
               name: product.name,
               price: product.price.toString(),
-              minimumQuantity: product.minimumQuantity.toString(),
-              discountRate: (product.discountRate || 0).toString(),
+              stock: product.stock.toString(),
+              discountPercentage: (product.discountPercentage || 0).toString(),
             };
             // Set image preview if product has image or use placeholder
             this.imagePreviewUrl =
@@ -143,15 +143,15 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     const code = this.formData.productCode.trim().toUpperCase();
     const name = this.formData.name.trim();
     const price = parseFloat(this.formData.price);
-    const minQty = parseInt(this.formData.minimumQuantity, 10);
-    const discount = parseInt(this.formData.discountRate, 10);
+    const stock = parseInt(this.formData.stock, 10);
+    const discountPercentage = parseInt(this.formData.discountPercentage, 10);
 
     fd.append('Category', category);
     fd.append('ProductCode', code);
     fd.append('Name', name);
     fd.append('Price', price.toString());
-    fd.append('MinimumQuantity', minQty.toString());
-    fd.append('DiscountRate', discount.toString());
+    fd.append('Stock', stock.toString());
+    fd.append('DiscountPercentage', discountPercentage.toString());
 
     if (this.selectedImageFile) {
       fd.append('Image', this.selectedImageFile);
@@ -235,20 +235,25 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    const minQty = Number(this.formData.minimumQuantity);
-    if (!Number.isInteger(minQty) || minQty < 1) {
-      this.errorMessage = 'Minimum quantity must be at least 1';
+    const stock = Number(this.formData.stock);
+    if (!Number.isInteger(stock) || stock < 0) {
+      this.errorMessage = 'Stock must be 0 or greater';
       return false;
     }
 
-    if (minQty > 1000) {
-      this.errorMessage = 'Minimum quantity must not exceed 1,000';
+    if (stock > 100000) {
+      this.errorMessage = 'Stock must not exceed 100,000';
       return false;
     }
 
-    const discount = Number(this.formData.discountRate);
-    if (!Number.isInteger(discount) || discount < 0 || discount > 100) {
-      this.errorMessage = 'Discount rate must be an integer between 0 and 100';
+    const discountPercentage = Number(this.formData.discountPercentage);
+    if (
+      !Number.isInteger(discountPercentage) ||
+      discountPercentage < 0 ||
+      discountPercentage > 100
+    ) {
+      this.errorMessage =
+        'Discount percentage must be an integer between 0 and 100';
       return false;
     }
 

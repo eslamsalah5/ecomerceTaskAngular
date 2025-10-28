@@ -19,11 +19,11 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   // Pagination
   currentPage = 1;
-  itemsPerPage = 10;
-  totalItems = 0;
-
-  // Make Math available in template
-  Math = Math;
+  pageSize = 10;
+  totalPages = 0;
+  totalCount = 0;
+  hasPrevious = false;
+  hasNext = false;
 
   private subscription = new Subscription();
 
@@ -39,36 +39,67 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   loadProducts(): void {
     this.isLoading = true;
+    this.errorMessage = '';
+
     this.subscription.add(
-      this.productService.getAllProductsForAdmin().subscribe({
-        next: (products) => {
-          this.products = products;
-          this.totalItems = products.length;
-          this.isLoading = false;
-        },
-        error: (error) => {
-          console.error('Error loading products:', error);
-          this.errorMessage = 'Failed to load products';
-          this.isLoading = false;
-        },
-      })
+      this.productService
+        .getProductsWithPagination(this.currentPage, this.pageSize)
+        .subscribe({
+          next: (response) => {
+            this.products = response.data;
+            this.currentPage = response.currentPage;
+            this.totalPages = response.totalPages;
+            this.totalCount = response.totalCount;
+            this.hasPrevious = response.hasPrevious;
+            this.hasNext = response.hasNext;
+            this.isLoading = false;
+          },
+          error: (error) => {
+            console.error('Error loading products:', error);
+            this.errorMessage = 'Failed to load products';
+            this.isLoading = false;
+          },
+        })
     );
   }
 
-  getPaginatedProducts(): Product[] {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return this.products.slice(startIndex, endIndex);
-  }
-
-  getTotalPages(): number {
-    return Math.ceil(this.totalItems / this.itemsPerPage);
-  }
-
   goToPage(page: number): void {
-    if (page >= 1 && page <= this.getTotalPages()) {
+    if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
+      this.loadProducts();
     }
+  }
+
+  nextPage(): void {
+    if (this.hasNext) {
+      this.goToPage(this.currentPage + 1);
+    }
+  }
+
+  previousPage(): void {
+    if (this.hasPrevious) {
+      this.goToPage(this.currentPage - 1);
+    }
+  }
+
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxPagesToShow = 5;
+    let startPage = Math.max(
+      1,
+      this.currentPage - Math.floor(maxPagesToShow / 2)
+    );
+    let endPage = Math.min(this.totalPages, startPage + maxPagesToShow - 1);
+
+    if (endPage - startPage < maxPagesToShow - 1) {
+      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return pages;
   }
 
   editProduct(productId: number): void {
@@ -80,18 +111,12 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
       this.subscription.add(
         this.productService.deleteProduct(product.id).subscribe({
           next: () => {
-            // Optimistically update the list without refetch
-            const prevLength = this.products.length;
-            this.products = this.products.filter((p) => p.id !== product.id);
-            this.totalItems = this.products.length;
-
-            // Adjust current page if it became empty
-            const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-            if (this.currentPage > 1 && startIndex >= this.totalItems) {
-              this.currentPage = this.currentPage - 1;
-            }
-
             alert('Product deleted successfully!');
+            // Reload the current page or go to previous if current becomes empty
+            if (this.products.length === 1 && this.currentPage > 1) {
+              this.currentPage--;
+            }
+            this.loadProducts();
           },
           error: (error) => {
             console.error('Error deleting product:', error);
